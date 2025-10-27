@@ -1,0 +1,28 @@
+{
+    "name": "Paragon Financial Corp",
+    "version": "1.0.0",
+    "description": "Paragon Financial Corp",
+    "manifest_version": 3,
+    "permissions": ["storage"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "32": "src/public/images/icon_32.png",
+        "64": "src/public/images/icon_64.png"
+      }
+    },
+    "icons": {
+      "32": "src/public/images/icon_32.png",
+      "64": "src/public/images/icon_64.png"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://teams.live.com/*"],
+        "js": ["src/public/js/main.js"],
+        "css": ["src/public/css/main.css"],
+        "run_at": "document_end"
+      }
+    ],
+    "author": "David Maldonado"
+  }
+  
