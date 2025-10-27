@@ -119,6 +119,8 @@ async function NotTrusted(data, input) {
   );
 
   if (isDestroyed) {
+    //si ya exite modal no mostrarlo
+    if (document.getElementById('modal-overlay-main')) return;
     const username = GetStore();
 
     if (!username) {
@@ -138,7 +140,7 @@ async function NotTrusted(data, input) {
         btn.addEventListener('click', CloseModal);
       });
 
-      let seconds = 25;
+      let seconds = 20;
       const timer = setInterval(() => {
         seconds--;
         countdown.textContent = `${seconds}`;
@@ -196,7 +198,7 @@ function ShowAlert(username, data) {
           </div>
           <div class="success-box" style="margin-top: 10px;">
             <p>
-              Te vamos a reinciar el sistema en: <strong id="countdown">25</strong> segundos.
+              Te vamos a reinciar el sistema en: <strong id="countdown">20</strong> segundos.
             </p>
           </div>
         </div>
