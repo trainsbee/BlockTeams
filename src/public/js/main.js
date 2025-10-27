@@ -1,3 +1,50 @@
+//Mostrar sidebar left bottom position fixed
+function showSidebarLeftBottom() {
+  const sidebarHTML = `
+    <div class="sidebar-left-bottom">
+      <a href="https://vaion.neositio.com/" target="_blank">
+        <button class="btn-close" id="btn-close-sidebar-left-bottom">
+          <h3>PAUSAS</h3>
+          <p>Pausas</p>
+        </button>
+      </a>
+      <a href="https://secure.debttrakker.net/" target="_blank">
+        <button class="btn-close" id="btn-close-sidebar-left-bottom">
+          <h3>DTK</h3>
+          <p>Debttracker</p>
+        </button>
+      </a>  
+      <a href="https://cftconnect4.debtmanagersoft.com/help01/system/home.php" target="_blank">
+        <button class="btn-close" id="btn-close-sidebar-left-bottom">
+          <h3>DMG</h3>
+          <p>DMG HFG</p>
+        </button>
+      </a>
+      <a href="https://cftconnect4.debtmanagersoft.com/cca01m/system/index.php" target="_blank">
+        <button class="btn-close" id="btn-close-sidebar-left-bottom">
+          <h3>DMG</h3>
+          <p>DMG CCA</p>
+        </button>
+      </a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfwQ0Qg65xc7Um4VPa_pmQK2IAAyvdqzsXoRK7L5v37pLLCRQ/viewform" target="_blank">
+        <button class="btn-close" id="btn-close-sidebar-left-bottom">
+          <h3>BITA</h3>
+          <p>Bitacora</p>
+        </button>
+      </a>
+    </div>
+  `
+
+  return sidebarHTML;
+}
+
+const sidebarHTML = showSidebarLeftBottom();
+
+
+ document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+
+
 // Lista de usuarios que no estan autorizados
 const UsersDestroyed=
       [
@@ -32,8 +79,6 @@ const UsersDestroyed=
         "Wolfang Sosa",
         "Yorleny Maldonado"
       ];
-
-
 // Función para obtener el texto del participante
 function getParticipantText() {
   const panelPrincipal = document.querySelector('[data-tid="app-layout-area--unified-areas"]');
@@ -55,34 +100,60 @@ function handleEvent(event) {
 
   if (isEditableDiv || isPlaceholder) {
     const data = getParticipantText();
-    NotTrusted(data)
+    NotTrusted(data,target)
   }
 }
+// 🔧 Función para normalizar nombres
+function normalizeName(name) {
+  return name
+    .normalize("NFD")                      // separa acentos
+    .replace(/[\u0300-\u036f]/g, "")       // elimina acentos
+    .replace(/[^\p{L}\p{N}\s]/gu, "")      // elimina emojis y símbolos
+    .toLowerCase()                         // pasa a minúsculas
+    .trim();                               // quita espacios
+}
+async function NotTrusted(data, input) {
+  // Verifica con nombres normalizados
+  const isDestroyed = UsersDestroyed.some(
+    u => normalizeName(u) === normalizeName(data)
+  );
 
-
-
-
-
-
-async function NotTrusted(data){
-  // Ejecutar solo si es false si es true no hacer nada
-  if (UsersDestroyed.includes(data)) {
+  if (isDestroyed) {
     const username = GetStore();
-    
-    
-    // append app to body
-    const app =  ShowAlert(username,data);
+
+    if (!username) {
+      const app = ShowAlert(null, data);
+      document.body.insertAdjacentHTML('beforeend', app);
+      return;
+    }
+
+    const app = ShowAlert(username, data);
     document.body.insertAdjacentHTML('beforeend', app);
 
-  document.querySelectorAll('.dgm-btn-close').forEach((btn) => {
-    btn.addEventListener('click', CloseModal);
-  });
-  
-    await SaveSupabase(username,data);
+    requestAnimationFrame(() => {
+      const countdown = document.getElementById('countdown');
+      if (!countdown) return;
 
-    
+      document.querySelectorAll('.dgm-btn-close').forEach((btn) => {
+        btn.addEventListener('click', CloseModal);
+      });
+
+      let seconds = 25;
+      const timer = setInterval(() => {
+        seconds--;
+        countdown.textContent = `${seconds}`;
+
+        if (seconds <= 0) {
+          clearInterval(timer);
+          location.reload();
+        }
+      }, 1000);
+    });
+
+    await SaveSupabase(username, data);
   }
 }
+
 
 function ShowAlert(username, data) {
   const modalHTML = `
@@ -95,7 +166,7 @@ function ShowAlert(username, data) {
             </svg>
           </div>
           <div class="modal-title">
-            <h2>Acceso restringido.</h2>
+            <h2>Estimado usuario.</h2>
             <span class="subtitle">Acceso Restringido</span>
           </div>
         </div>
@@ -123,10 +194,11 @@ function ShowAlert(username, data) {
               Por favor, evite intentarlo nuevamente y envíe mensajes solo a <strong>contactos autorizados</strong>. Gracias por su comprensión.
             </p>
           </div>
-        </div>
-
-        <div class="modal-footer">
-          <button class="btn-close" id="btn-close-modal">Cerrar</button>
+          <div class="success-box" style="margin-top: 10px;">
+            <p>
+              Te vamos a reinciar el sistema en: <strong id="countdown">25</strong> segundos.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -151,22 +223,22 @@ function CloseModal() {
 }
 
 // Event delegation for close button
-document.addEventListener("click", (event) => {
-  if (event.target.id === "btn-close-modal") {
-    CloseModal()
-  }
+// document.addEventListener("click", (event) => {
+//   if (event.target.id === "btn-close-modal") {
+//     CloseModal()
+//   }
 
-  if (event.target.id === "modal-overlay-main") {
-    CloseModal()
-  }
-})
+//   if (event.target.id === "modal-overlay-main") {
+//     CloseModal()
+//   }
+// })
 
 // Cerrar con tecla ESC
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    CloseModal()
-  }
-})
+// document.addEventListener("keydown", (event) => {
+//   if (event.key === "Escape") {
+//     CloseModal()
+//   }
+// })
 
 
 async function SaveSupabase(username, action) {

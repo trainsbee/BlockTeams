@@ -14,6 +14,10 @@
   --color-red-alpha-border: rgba(220, 38, 38, 0.2);
   --color-red-alpha-shadow: rgba(220, 38, 38, 0.15);
   --color-overlay: rgba(0, 0, 0, 0.85);
+  --color-green-alpha-light: #6258003d;
+  --coloer-green-alpha-border: #92901e4d;
+
+  
 }
 
 * {
@@ -196,6 +200,12 @@ body {
   border-radius: 6px;
   padding: 16px;
 }
+.success-box {
+  background: var(--color-green-alpha-light);
+  border: 1px solid var(--color-green-alpha-border);
+  border-radius: 6px;
+  padding: 16px;
+}
 
 .warning-box p {
   font-size: 14px;
@@ -267,3 +277,39 @@ body {
     width: 100%;
   }
 }
+
+.sidebar-left-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
+  padding: 16px 0;
+  text-align: center;
+  width: 68px;
+  height: 480px;
+  border-radius: 0 !important;
+}
+.sidebar-left-bottom button {
+  padding: 16px 1px !important;
+  background: none !important;
+  border-radius: 0 !important;
+  border: none;
+}
+.sidebar-left-bottom button:hover {
+  background-color: var(--color-red-primary) !important;
+}
+.sidebar-left-bottom button h3 {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.sidebar-left-bottom button p {
+  font-size: 12px !important;
+  color: var(--color-text-muted);
+  font-weight: 400 !important;
+}
+
